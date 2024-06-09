@@ -1,0 +1,190 @@
+@prefix lv2: <http://lv2plug.in/ns/lv2core#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix units: <http://lv2plug.in/ns/extensions/units#> .
+@prefix mod: <http://moddevices.com/ns/mod#>.
+@prefix modgui: <http://moddevices.com/ns/modgui#>.
+@prefix doap: <http://usefulinc.com/ns/doap#>.
+@prefix foaf: <http://xmlns.com/foaf/0.1/>.
+
+<http://example.org/control-button-board>
+    a lv2:Plugin , mod:ControlVoltagePlugin;
+    mod:brand "J Siva";
+    mod:label "Control Button Board";
+    doap:name "Control Button Board";
+    doap:license "GPL v2+";
+    doap:developer [
+        foaf:name "J Siva";
+        foaf:homepage <>;
+        foaf:mbox <mailto:njsiva@gmail.com>;
+    ];
+
+    doap:maintainer [
+        foaf:name "J Siva";
+        foaf:homepage <>;
+        foaf:mbox <mailto:njsiva@gmail.com>;
+    ];
+    lv2:minorVersion 1;
+    lv2:microVersion 0;
+    lv2:optionalFeature lv2:hardRTCapable, <http://moddevices.com/ns/hmi#WidgetControl>;
+    lv2:extensionData <http://moddevices.com/ns/hmi#PluginNotification>;
+    rdfs:label "Control Button Board" ;
+    rdfs:comment """
+A plugin that five pairs of toggle buttons that operate in unison within each
+pair - if one of the toggles is turned on, the other turn on automaticall and a HIGH CV
+signal is sent through the corresponding CV port. If either is then turned off, then
+both toggles within the pair are turned off automatically and a LOW CV signal is sent, 
+If a mod hardware button capable of colour LEDs is associated with one or both buttons, 
+colouration should match CV status. This plugin can be used with MIDI
+controllers, for instance, to pair up each latching switch on the controller
+with a hardware button that act act similarly to control an effect on-off button
+through the CV control.
+    """;
+
+    lv2:port [
+        a lv2:ControlPort, lv2:InputPort ;
+        lv2:index 0 ;
+        lv2:portProperty lv2:integer, lv2:toggled;
+        lv2:symbol "toggle11" ;
+        lv2:name "Toggle 1-A" ;
+    ], [
+        a lv2:ControlPort, lv2:InputPort ;
+        lv2:index 1 ;
+        lv2:portProperty lv2:integer, lv2:toggled;
+        lv2:symbol "toggle12" ;
+        lv2:name "Toggle 1-B" ;
+    ], [
+        a lv2:ControlPort, lv2:InputPort ;
+        lv2:index 2 ;
+        lv2:portProperty lv2:integer, lv2:toggled;
+        lv2:symbol "toggle21" ;
+        lv2:name "Toggle 2-A" ;
+    ], [
+        a lv2:ControlPort, lv2:InputPort ;
+        lv2:index 3 ;
+        lv2:portProperty lv2:integer, lv2:toggled;
+        lv2:symbol "toggle22" ;
+        lv2:name "Toggle 2-B" ;
+    ],[
+        a lv2:ControlPort, lv2:InputPort ;
+        lv2:index 4 ;
+        lv2:portProperty lv2:integer, lv2:toggled;
+        lv2:symbol "toggle31" ;
+        lv2:name "Toggle 3-A" ;
+    ], [
+        a lv2:ControlPort, lv2:InputPort ;
+        lv2:index 5 ;
+        lv2:portProperty lv2:integer, lv2:toggled;
+        lv2:symbol "toggle32" ;
+        lv2:name "Toggle 3-B" ;
+    ],[
+        a lv2:ControlPort, lv2:InputPort ;
+        lv2:index 6 ;
+        lv2:portProperty lv2:integer, lv2:toggled;
+        lv2:symbol "toggle41" ;
+        lv2:name "Toggle 4-A" ;
+    ], [
+        a lv2:ControlPort, lv2:InputPort ;
+        lv2:index 7 ;
+        lv2:portProperty lv2:integer, lv2:toggled;
+        lv2:symbol "toggle42" ;
+        lv2:name "Toggle 4-B" ;
+    ],[
+        a lv2:ControlPort, lv2:InputPort ;
+        lv2:index 8 ;
+        lv2:portProperty lv2:integer, lv2:toggled;
+        lv2:symbol "toggle51" ;
+        lv2:name "Toggle 5-A" ;
+    ], [
+        a lv2:ControlPort, lv2:InputPort ;
+        lv2:index 9 ;
+        lv2:portProperty lv2:integer, lv2:toggled;
+        lv2:symbol "toggle52" ;
+        lv2:name "Toggle 5-B" ;
+    ], [
+        a lv2:OutputPort, lv2:CVPort, mod:CVPort;
+        lv2:index 10;
+        lv2:symbol "cvout1";
+        lv2:name "Cv Press Output 1";
+		lv2:minimum 0.0 ;
+		lv2:maximum 10.0 ;
+    ], [
+        a lv2:OutputPort, lv2:CVPort, mod:CVPort;
+        lv2:index 11;
+        lv2:symbol "cvout2";
+        lv2:name "Cv Press Output 2";
+		lv2:minimum 0.0 ;
+		lv2:maximum 10.0 ;
+    ], [
+        a lv2:OutputPort, lv2:CVPort, mod:CVPort;
+        lv2:index 12;
+        lv2:symbol "cvout3";
+        lv2:name "Cv Press Output 3";
+		lv2:minimum 0.0 ;
+		lv2:maximum 10.0 ;
+    ], [
+        a lv2:OutputPort, lv2:CVPort, mod:CVPort;
+        lv2:index 13;
+        lv2:symbol "cvout4";
+        lv2:name "Cv Press Output 4";
+		lv2:minimum 0.0 ;
+		lv2:maximum 10.0 ;
+    ],[
+        a lv2:OutputPort, lv2:CVPort, mod:CVPort;
+        lv2:index 14;
+        lv2:symbol "cvout5";
+        lv2:name "Cv Press Output 5";
+		lv2:minimum 0.0 ;
+		lv2:maximum 10.0 ;
+    ];
+	modgui:gui [
+		modgui:brand "J Siva";
+		modgui:label "Control Button Board";
+		modgui:resourcesDirectory <modgui>;
+		modgui:iconTemplate <modgui/icon-control-button-board.html>;
+        modgui:stylesheet <modgui/stylesheet-control-button-board.css> ;
+		modgui:screenshot <modgui/control-button-board.png>;
+		modgui:thumbnail <modgui/control-button-board-thumb.png>;
+        modgui:port [
+            lv2:index 0 ;
+            lv2:symbol "toggle11" ;
+            lv2:name "Toggle 1-A" ;
+        ] , [
+            lv2:index 1 ;
+            lv2:symbol "toggle12" ;
+            lv2:name "Toggle 1-B" ;
+        ] , [
+            lv2:index 2 ;
+            lv2:symbol "toggle21" ;
+            lv2:name "Toggle 2-A" ;
+        ] , [
+            lv2:index 3 ;
+            lv2:symbol "toggle22" ;
+            lv2:name "Toggle 2-B" ;
+        ] , [
+            lv2:index 4 ;
+            lv2:symbol "toggle31" ;
+            lv2:name "Toggle 3-A" ;
+        ] , [
+            lv2:index 5 ;
+            lv2:symbol "toggle32" ;
+            lv2:name "Toggle 3-B" ;
+        ] , [
+            lv2:index 6 ;
+            lv2:symbol "toggle41" ;
+            lv2:name "Toggle 4-A" ;
+        ] , [
+            lv2:index 7 ;
+            lv2:symbol "toggle42" ;
+            lv2:name "Toggle 4-B" ;
+        ] , [
+            lv2:index 8 ;
+            lv2:symbol "toggle51" ;
+            lv2:name "Toggle 5-A" ;
+        ] , [
+            lv2:index 9 ;
+            lv2:symbol "toggle52" ;
+            lv2:name "Toggle 5-B" ;
+        ];
+	] .
+

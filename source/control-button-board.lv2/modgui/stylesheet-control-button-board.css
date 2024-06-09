@@ -1,0 +1,141 @@
+/* = GLOBAL
+================================================ */
+.control-button-board * {
+    color: white !important;
+}
+
+
+/* = CONTAINER
+================================================ */
+.control-button-board {
+    background-image:url(/resources/background.png{{{ns}}});
+    background-size: 360px 550px;
+    background-repeat: no-repeat;
+    width: 360px;
+    height: 550px;
+    position: relative;
+}
+
+.control-button-board.mod-pedal .mod-plugin-name {
+	top: 90px;
+    height: 38px;
+    text-align: center;
+}
+
+/* = CONTROL GROUP POSITION
+================================================ */
+.control-button-board .mod-toggle-group {
+    top: 131px;
+    left: 40px;
+    position: absolute;
+}
+
+.control-button-board .mod-toggle-group .mod-control-group {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 10px; /* Adjust spacing between pairs if needed */
+    position: relative;
+}
+
+/* = CONTROL IMAGE
+================================================ */
+.control-button-board .mod-control-image {
+    background-image: url(/resources/switch.png{{{ns}}});
+    background-position: left center;
+    background-repeat: no-repeat;
+    background-size: 300px 40px;
+    cursor: pointer;
+    height: 51px;
+    width: 150px;
+    margin-bottom: 8px; /* Adjust spacing within pairs if needed */
+    position: relative;
+    overflow: hidden;
+}
+
+/* = KNOB VALUE
+================================================ */
+.control-button-board .mod-knob-value {
+    color: #84ff00 !important;
+    background: #222;
+    font-family: monospace;
+    text-align: right;
+    margin: 5px 0 52px 0;
+    border: 1px inset #555;
+    display: block;
+    height: 20px;
+    width: 100px;
+    overflow: hidden;
+}
+
+/* = FOOTSWITCH
+================================================ */
+.control-button-board.mod-pedal .mod-footswitch {
+    background-image: url(/resources/footswitch.png{{{ns}}});
+    background-position: top center;
+    background-repeat: no-repeat;
+    background-size: auto 132px;
+    height: 66px;
+    width: 66px;
+    cursor: pointer;
+    position: absolute !important;
+    bottom: 22px;
+    right: 150px;
+}
+.control-button-board.mod-pedal .mod-footswitch.off {
+    background-position: bottom center;
+}
+
+.control-button-board.mod-pedal .mod-light {
+    background-image: url(/resources/red-light-on.png{{{ns}}});
+    background-position: top center;
+    background-repeat: no-repeat;
+    background-size: 32px 32px;
+    height: 32px;
+    width: 32px;
+    position: absolute !important;
+    bottom: 95px;
+    right: 165px;
+}
+.control-button-board.mod-pedal .mod-light.off {
+    background-image: url(/resources/red-light-off.png{{{ns}}});
+}
+
+/* = PEDAL INPUT/OUTPUT POSITION
+================================================ */
+.control-button-board .mod-pedal-input {
+    top: 212px;
+}
+
+.control-button-board .mod-pedal-output {
+    top: 124px;
+}
+
+.control-button-board .mod-pedal-output>* {
+    margin-bottom: 3px !important;
+}
+
+/* = BYPASS SWITCH POSITION
+================================================ */
+.control-button-board .mod-switch {
+    background-image: url(/resources/switch.png{{{ns}}}); /* Ensure correct image is used */
+    background-position: center bottom;
+    background-repeat: no-repeat;
+    background-size: auto 40px;
+    cursor: pointer;
+    height: 40px;
+    width: 40px;
+    top: 50px; /* Adjust positioning as needed */
+    right: 50px; /* Adjust positioning as needed */
+    position: absolute;
+    z-index: 30;
+}
+
+.control-button-board .mod-switch.on {
+    background-position: top center;
+}
+
+.control-button-board .mod-switch.off {
+    background-position: bottom center;
+}
+
