@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Control Button Board LV2 Plugin is a custom plugin designed to handle multiple pairs of toggle switches with associated control voltage (CV) outputs. This plugin is designed specifically for use with MOD Devices, allowing users to control effect toggle switches with an external MIDI controller (for instance) as well as a hardware button at the same time.
+The Control Button Board LV2 Plugin is a custom plugin designed to handle multiple pairs of toggle switches with associated control voltage (CV) outputs. This plugin is designed specifically for use with MOD Devices, allowing users to control effect toggle switches with an external MIDI controller (for instance) as well as a hardware button at the same time. *Currently only tested on a MOD Duo X.*
 
 ## Features
 
