@@ -38,9 +38,10 @@ typedef struct {
 	float* cv_output[NUM_PAIRS];
 
 	// Features
+	LV2_URID_Map*  map;
 	LV2_HMI_WidgetControl* hmi;
 	const LV2_ControlInputPort_Change_Request* change_request;  // Feature for control input port change request
-    LV2_Log_Logger logger;
+	LV2_Log_Logger logger;
 
 	// State variables
 	uint8_t states[NUM_PAIRS];
@@ -59,13 +60,15 @@ static LV2_Handle instantiate(const LV2_Descriptor* descriptor,
 	// Query host features
 	const char* missing = lv2_features_query(
 			features,
-            LV2_LOG__log, &plugin->logger.log,  false,
+			LV2_URID__map, &plugin->map, true,
+			LV2_LOG__log, &plugin->logger.log,  false,
 			LV2_HMI__WidgetControl, &plugin->hmi, false,
 			LV2_CONTROL_INPUT_PORT_CHANGE_REQUEST_URI, &plugin->change_request, false,
 			NULL);
 
+	lv2_log_logger_set_map(&plugin->logger, plugin->map);
 	if (missing) {
-        lv2_log_error(&plugin->logger, "Missing feature <%s>\n", missing);
+		lv2_log_error(&plugin->logger, "Missing feature <%s>\n", missing);
 		free(plugin);
 		return NULL;
 	}
@@ -111,8 +114,6 @@ static void run(LV2_Handle instance, uint32_t n_samples) {
 		// Check the toggle states
 		uint8_t toggle1on = (*(plugin->toggles[i][0]) > 0.0f) ? 1 : 0;
 		uint8_t toggle2on = (*(plugin->toggles[i][1]) > 0.0f) ? 1 : 0;
-		lv2_log_warning(&plugin->logger, "toggle <%i> - 0  is <%u>\n", i, toggle1on);
-		lv2_log_warning(&plugin->logger, "toggle <%i> - 1  is <%u>\n", i, toggle2on);
 
 		uint8_t new_state = plugin->states[i];
 
@@ -124,22 +125,19 @@ static void run(LV2_Handle instance, uint32_t n_samples) {
 			// this means something has happened with toggle1
 			new_state = toggle2on;
 		} 
-		lv2_log_warning(&plugin->logger, "New State is <%u>\n", new_state);
-		lv2_log_warning(&plugin->logger, "Old State <%i> is <%u>\n", i, plugin->states[i]);
 
 		if(new_state != plugin->states[i]) {
 			// Set the CV output to 10V if the state is on, 0V if off
 			float cv_value = new_state ? 10.0f : 0.0f;
-			lv2_log_warning(&plugin->logger, "sending CV <%i> is <%f>\n", i, cv_value);
 
 			for (uint32_t j = 0; j < n_samples; j++) {
 				plugin->cv_output[i][j] = cv_value;
 			}
 
 			// Update the LED status based on the new state
-			lv2_log_warning(&plugin->logger, "trigger LED change <%i> - 0 with <%u>\n", i, new_state);
+			lv2_log_trace(&plugin->logger, "trigger LED change <%i> - 0 with <%u>\n", i, new_state);
 			trigger_led_change(plugin, i, 0, new_state);
-			lv2_log_warning(&plugin->logger, "trigger LED change <%i> - 1 with <%u>\n", i, new_state);
+			lv2_log_trace(&plugin->logger, "trigger LED change <%i> - 1 with <%u>\n", i, new_state);
 			trigger_led_change(plugin, i, 1, new_state);
 
 			// Request the other toggle to change state if needed
@@ -148,21 +146,21 @@ static void run(LV2_Handle instance, uint32_t n_samples) {
 				if (new_state) {
 					//  try to turn what is not on on
 					if (!toggle2on) {
-						lv2_log_warning(&plugin->logger, "trying to change on switch for port <%i> with 1.0\n", ((i*2)+1));
+						lv2_log_trace(&plugin->logger, "trying to change on switch for port <%i> with 1.0\n", ((i*2)+1));
 						plugin->change_request->request_change(plugin->change_request->handle, (i * 2) + 1, 1.0);
 					}
 					if (!toggle1on) {
-						lv2_log_warning(&plugin->logger, "trying to change on switch for port <%i> with 1.0\n", (i*2));
+						lv2_log_trace(&plugin->logger, "trying to change on switch for port <%i> with 1.0\n", (i*2));
 						plugin->change_request->request_change(plugin->change_request->handle, (i * 2), 1.0);
 					}
 				} else {
 					//  try to turn what is not off off
 					if (toggle1on) {
-						lv2_log_warning(&plugin->logger, "trying to change on switch for port <%i> with 0.0\n", (i*2));
+						lv2_log_trace(&plugin->logger, "trying to change on switch for port <%i> with 0.0\n", (i*2));
 						plugin->change_request->request_change(plugin->change_request->handle, (i * 2), 0.0);
 					}
 					if (toggle2on) {
-						lv2_log_warning(&plugin->logger, "trying to change on switch for port <%i> with 0.0\n", ((i*2)+1));
+						lv2_log_trace(&plugin->logger, "trying to change on switch for port <%i> with 0.0\n", ((i*2)+1));
 						plugin->change_request->request_change(plugin->change_request->handle, (i * 2) + 1, 0.0);
 					}
 				}
@@ -198,7 +196,7 @@ static void unaddressed(LV2_Handle handle, uint32_t index)
 	plugin->toggle_addressing[pair_index][toggle_index] = NULL;
 }
 
-// Extension data for the HMI feature and control input port change request
+// Extension data for the HMI feature
 static const void* extension_data(const char* uri)
 {
 	static const LV2_HMI_PluginNotification hmiNotif = {
@@ -206,14 +204,8 @@ static const void* extension_data(const char* uri)
 		unaddressed,
 	};
 
-	static const LV2_ControlInputPort_Change_Request changeRequest = {
-	};
-
 	if (!strcmp(uri, LV2_HMI__PluginNotification))
 		return &hmiNotif;
-
-	if (!strcmp(uri, LV2_CONTROL_INPUT_PORT_CHANGE_REQUEST_URI))
-		return &changeRequest;
 
 	return NULL;
 }
