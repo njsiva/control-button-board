@@ -36,7 +36,13 @@ clean:
 
 install: build
 	install -d $(DESTDIR)$(PREFIX)/lib/lv2/control-button-board.lv2
+	install -d $(DESTDIR)$(PREFIX)/lib/lv2/control-button-board.lv2/modgui
+	install -d $(DESTDIR)$(PREFIX)/lib/lv2/control-button-board.lv2/modgui/control-button-board_sprite_sheets
 	install -m 644 control-button-board.lv2/*.so  $(DESTDIR)$(PREFIX)/lib/lv2/control-button-board.lv2/
 	install -m 644 control-button-board.lv2/*.ttl $(DESTDIR)$(PREFIX)/lib/lv2/control-button-board.lv2/
+	install -m 644 control-button-board.lv2/modgui/*.png $(DESTDIR)$(PREFIX)/lib/lv2/control-button-board.lv2/modgui
+	install -m 644 control-button-board.lv2/modgui/*.html $(DESTDIR)$(PREFIX)/lib/lv2/control-button-board.lv2/modgui
+	install -m 644 control-button-board.lv2/modgui/*.css $(DESTDIR)$(PREFIX)/lib/lv2/control-button-board.lv2/modgui
+	install -m 644 control-button-board.lv2/modgui/control-button-board_sprite_sheets/*.png $(DESTDIR)$(PREFIX)/lib/lv2/control-button-board.lv2/modgui/control-button-board_sprite_sheets
 
 # --------------------------------------------------------------
