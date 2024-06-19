@@ -12,6 +12,9 @@ The Control Button Board LV2 Plugin is a custom plugin designed to handle multip
 - Toggle states can be changed through host control input port change requests.
 - Bypass functionality for easy switching.
 
+## To Build from the Source Files
+See: https://wiki.mod.audio/wiki/Building_a_plugin_for_MOD_Duo_and_MOD_Duo_X
+
 ## License
 This project is licensed under the GNU General Public License v3.0. See the LICENSE file for details.
 
