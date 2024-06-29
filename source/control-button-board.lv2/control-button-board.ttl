@@ -35,15 +35,20 @@
     lv2:extensionData <http://moddevices.com/ns/hmi#PluginNotification>;
     rdfs:label "Control Button Board" ;
     rdfs:comment """
-A plugin that five pairs of toggle buttons that operate in unison within each
+A plugin providing five pairs of toggle buttons that operate in unison within each
 pair - if one of the toggles is turned on, the other turn on automaticall and a HIGH CV
 signal is sent through the corresponding CV port. If either is then turned off, then
 both toggles within the pair are turned off automatically and a LOW CV signal is sent, 
 If a mod hardware button capable of colour LEDs is associated with one or both buttons, 
-colouration should match CV status. This plugin can be used with MIDI
-controllers, for instance, to pair up each latching switch on the controller
-with a hardware button that act act similarly to control an effect on-off button
-through the CV control.
+colouration should match CV status. 
+
+This plugin can be used with MIDI controllers:  for instance, to pair up each latching 
+switch on the controller with a hardware button that act act similarly to control an 
+effect on-off button through the CV control. Moreover it is possible to commute a switch
+pair trough a dedicated midi CC (selectable) having as a Control Value the index of the 
+switch pair (0 to 4). E.g. sentting the CC parameter to 19 and sending a CC 19 with data 1
+toggles the second pair (it counts from 0). This could help toggling a plugin via midi 
+without having to sync ots initial state between the MOD unit and the controller. 
     """;
 
     lv2:port [
@@ -70,7 +75,7 @@ through the CV control.
         lv2:portProperty lv2:integer, lv2:toggled;
         lv2:symbol "toggle22" ;
         lv2:name "Toggle 2-B" ;
-    ],[
+    ], [
         a lv2:ControlPort, lv2:InputPort ;
         lv2:index 4 ;
         lv2:portProperty lv2:integer, lv2:toggled;
@@ -82,7 +87,7 @@ through the CV control.
         lv2:portProperty lv2:integer, lv2:toggled;
         lv2:symbol "toggle32" ;
         lv2:name "Toggle 3-B" ;
-    ],[
+    ], [
         a lv2:ControlPort, lv2:InputPort ;
         lv2:index 6 ;
         lv2:portProperty lv2:integer, lv2:toggled;
@@ -94,7 +99,7 @@ through the CV control.
         lv2:portProperty lv2:integer, lv2:toggled;
         lv2:symbol "toggle42" ;
         lv2:name "Toggle 4-B" ;
-    ],[
+    ], [
         a lv2:ControlPort, lv2:InputPort ;
         lv2:index 8 ;
         lv2:portProperty lv2:integer, lv2:toggled;
@@ -150,6 +155,16 @@ through the CV control.
         lv2:index 15 ;
         lv2:symbol "midi_control" ;
         lv2:name "midi_control";
+    ], [    
+        a lv2:InputPort, lv2:ControlPort;
+        lv2:index 16;
+        lv2:symbol "CC";
+        lv2:name "CC";
+        lv2:minimum 0;
+        lv2:default 0;
+        lv2:maximum 127;
+        lv2:portProperty lv2:integer;
+
     ];
 	modgui:gui [
 		modgui:brand "J Siva";
