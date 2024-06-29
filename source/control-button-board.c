@@ -173,7 +173,7 @@ static void run(LV2_Handle instance, uint32_t n_samples) {
 			}
 
 			// Update the LED status based on the new state
-							lv2_log_trace(&plugin->logger, "trigger LED change <%i> - 0 with <%u>\n", i, new_state);
+			lv2_log_trace(&plugin->logger, "trigger LED change <%i> - 0 with <%u>\n", i, new_state);
 			trigger_led_change(plugin, i, 0, new_state);
 			lv2_log_trace(&plugin->logger, "trigger LED change <%i> - 1 with <%u>\n", i, new_state);
 			trigger_led_change(plugin, i, 1, new_state);
