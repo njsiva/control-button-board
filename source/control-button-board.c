@@ -15,13 +15,21 @@
  * along with this LV2 plugin; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
-#include <lv2/core/lv2.h>
+
+#include <stdio.h>
 #include <stdlib.h>
 #include "lv2-hmi.h"
-#include "lv2/core/lv2_util.h"
 #include "control-input-port-change-request.h"  // Include the extension header
-#include "lv2/log/log.h"
-#include "lv2/log/logger.h"
+#include <lv2/core/lv2.h>
+#include <lv2/core/lv2_util.h>
+#include <lv2/atom/atom.h>
+#include <lv2/atom/util.h>
+#include <lv2/log/log.h>
+#include <lv2/log/logger.h>
+#include <lv2/midi/midi.h>
+#include <lv2/urid/urid.h>
+
+
 
 #define PLUGIN_URI "http://example.org/control-button-board"
 
@@ -29,14 +37,15 @@
 #define NUM_PAIRS 5
 
 // Define the total number of ports
-#define TOTAL_PORTS (NUM_PAIRS * 3)
+#define TOTAL_PORTS (NUM_PAIRS * 3+2)
 
 // The main plugin struct to hold the toggle statuses and other state data
 typedef struct {
 	// Ports
 	const float* toggles[NUM_PAIRS][2];
 	float* cv_output[NUM_PAIRS];
-
+	const LV2_Atom_Sequence* midi_in_port;
+	const float* midi_CC;
 	// Features
 	LV2_URID_Map*  map;
 	LV2_HMI_WidgetControl* hmi;
@@ -85,13 +94,31 @@ static void connect_port(LV2_Handle instance,
 						 uint32_t port,
 						 void* data_location) {
 	TogglePlugin* plugin = (TogglePlugin*)instance;
+
 	if (port < 2*NUM_PAIRS) {
 		uint8_t pair_index = port / 2;
 		uint8_t toggle_index = port % 2;
 		plugin->toggles[pair_index][toggle_index] = (const float*)data_location;
-	} else if (port < TOTAL_PORTS) {
+
+	} else if (port < 3*NUM_PAIRS) {
 		uint8_t pair_index = port - 2*NUM_PAIRS;
 		plugin->cv_output[pair_index] = (float*)data_location;
+	} else {
+		int n = port-3*NUM_PAIRS;
+		switch (n)
+		{
+		case 0: //midi input port
+			plugin->midi_in_port = (const LV2_Atom_Sequence*)data_location;
+
+			break;
+		case 1: //midi CC
+			plugin->midi_CC = (const float*)data_location;
+			break;
+		
+		default:
+
+			break;
+		}
 	}
 }
 
@@ -109,6 +136,29 @@ void trigger_led_change(TogglePlugin* plugin, uint8_t pair_index, uint8_t toggle
 // Main processing function
 static void run(LV2_Handle instance, uint32_t n_samples) {
 	TogglePlugin* plugin = (TogglePlugin*)instance;
+	uint8_t midi_toggles[NUM_PAIRS];
+	
+	memset(midi_toggles,0,NUM_PAIRS*sizeof(uint8_t));
+
+	// Read incoming events
+	LV2_ATOM_SEQUENCE_FOREACH (plugin->midi_in_port, ev) {
+		const uint8_t* const msg = (const uint8_t*)(ev + 1);
+		switch (lv2_midi_message_type(msg)) {
+			case LV2_MIDI_MSG_CONTROLLER:
+				if 	( msg[1] == (uint8_t)(*(plugin->midi_CC))) {
+					if (msg[2] < NUM_PAIRS ) {
+						midi_toggles[msg[2]] = 1;
+					}			
+				}
+				break;	
+
+			default:
+				// Forward all other MIDI events directly
+				// lv2_atom_sequence_append_event(self->out_port, out_capacity, ev);
+#warning TODO: add output port
+				break;
+		}
+	}
 
 	for (int i = 0; i < NUM_PAIRS; i++) {
 		// Check the toggle states
@@ -116,7 +166,7 @@ static void run(LV2_Handle instance, uint32_t n_samples) {
 		uint8_t toggle2on = (*(plugin->toggles[i][1]) > 0.0f) ? 1 : 0;
 
 		uint8_t new_state = plugin->states[i];
-
+#if 0
 		// If the state has changed, update the state, CV output, and request the other toggle to change
 		if (plugin->states[i] != toggle1on) {
 			// this means something has happened with toggle1
@@ -125,6 +175,10 @@ static void run(LV2_Handle instance, uint32_t n_samples) {
 			// this means something has happened with toggle1
 			new_state = toggle2on;
 		} 
+#else
+		if ( (new_state != toggle1on) || (new_state != toggle2on) || (midi_toggles[i]) )
+			new_state = (new_state ? 0 : 1);
+#endif	
 
 		if(new_state != plugin->states[i]) {
 			// Set the CV output to 10V if the state is on, 0V if off
@@ -168,6 +222,7 @@ static void run(LV2_Handle instance, uint32_t n_samples) {
 			plugin->states[i] = new_state;
 		}
 	}
+
 }
 
 
